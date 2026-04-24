@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LESLAV SWAP | Premium Exchange</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
             --bg: #18222d;
@@ -59,11 +60,7 @@
         .calc-res span { color: var(--accent); font-size: 28px; font-weight: 800; display: block; }
 
         .main-btn { width: 100%; padding: 16px; background: var(--accent); color: white; border: none; border-radius: 14px; font-weight: bold; cursor: pointer; text-transform: uppercase; margin-bottom: 10px; }
-        .share-btn { width: 100%; padding: 10px; background: transparent; color: var(--hint); border: 1px solid #2f3e4e; border-radius: 12px; font-size: 12px; cursor: pointer; margin-bottom: 15px; }
-
-        details { background: #1c2733; border-radius: 10px; margin-bottom: 5px; padding: 10px; font-size: 12px; text-align: left; }
-        summary { cursor: pointer; font-weight: bold; outline: none; }
-        details p { margin-top: 8px; color: var(--hint); line-height: 1.4; }
+        .secondary-btn { width: 100%; padding: 10px; background: transparent; color: var(--hint); border: 1px solid #2f3e4e; border-radius: 12px; font-size: 12px; cursor: pointer; margin-bottom: 5px; }
 
         .visitor-counter { margin-top: 15px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 12px; font-size: 11px; color: var(--hint); display: flex; justify-content: center; align-items: center; gap: 8px; }
         .counter-num { color: var(--success); font-weight: bold; font-family: monospace; font-size: 14px; }
@@ -73,7 +70,7 @@
 </head>
 <body>
 
-<div class="exchange-card">
+<div class="exchange-card" id="capture">
     <div class="status"><div class="dot"></div> Online</div>
     <div class="ton-logo">
         <svg viewBox="0 0 512 512"><path d="M256 0C114.6 0 0 114.6 0 256s114.6 256 256 256s256-114.6 256-256S397.4 0 256 0zM380.1 169.5L271.7 394c-4.4 9.1-13.4 14.8-23.5 14.8s-19.1-5.7-23.5-14.8L116.3 169.5c-4.1-8.5-3.3-18.6 2.1-26.3c5.4-7.7 14.4-12.3 23.9-12.3h220.1c9.5 0 18.5 4.6 23.9 12.3c5.7 7.7 6.5 17.8 2.4 26.3z"></path></svg>
@@ -81,12 +78,8 @@
     <h2>LESLAV SWAP</h2>
     <div class="rate-badge">1 TON = 100k UA | 5000 GRAM = 1 UA</div>
 
-    <div class="widget">
-        <iframe src="https://widget.coinlib.io/widget?type=horizontal_v2&theme=dark&pref_coin_id=1505&crypto_ids=1614051" width="100%" height="40px" scrolling="no" frameborder="0" style="border:0;margin:0;padding:0;"></iframe>
-    </div>
-
     <div class="input-group">
-        <label>Валюта чека</label>
+        <label>Валюта</label>
         <select id="type" onchange="calculate()">
             <option value="TON">TON Blockchain</option>
             <option value="GRAM">PR GRAM</option>
@@ -104,89 +97,79 @@
     </div>
 
     <div class="input-group">
-        <label>Сервіс чеку</label>
+        <label>Сервіс</label>
         <select id="service_select">
-            <option value="Crypto Bot">Чек Crypto Bot</option>
-            <option value="xRocket">Чек xRocket</option>
-            <option value="PR GRAM">Чек PR GRAM</option>
-            <option value="iCryptoCheck">Чек iCryptoCheck</option>
+            <option value="Crypto Bot">Crypto Bot</option>
+            <option value="xRocket">xRocket</option>
+            <option value="iCryptoCheck">iCryptoCheck</option>
         </select>
+    </div>
+
+    <div class="input-group">
+        <label>Гаманець TON</label>
+        <div class="input-wrapper">
+            <input type="text" id="wal" placeholder="Адреса UQ...">
+            <button class="paste-btn" onclick="paste('wal')">📋</button>
+        </div>
     </div>
 
     <div class="input-group">
         <label>Посилання на чек</label>
         <div class="input-wrapper">
-            <input type="text" id="chk" placeholder="https://t.me/...">
+            <input type="text" id="chk" placeholder="t.me/...">
             <button class="paste-btn" onclick="paste('chk')">📋</button>
         </div>
     </div>
 
-    <div class="input-group">
-        <label>Ваш гаманець TON</label>
-        <div class="input-wrapper">
-            <input type="text" id="wal" placeholder="UQ... або EQ...">
-            <button class="paste-btn" onclick="paste('wal')">📋</button>
-        </div>
-    </div>
-
-    <button class="main-btn" onclick="swap()">Оформити обмін</button>
-    <button class="share-btn" onclick="share()">🔗 Копіювати посилання</button>
-
-    <div class="faq-section">
-        <details><summary>Скільки чекати?</summary><p>Від 5 хвилин до 24 годин.</p></details>
-        <details><summary>Куди прийдуть UA?</summary><p>На вказаний гаманець TON.</p></details>
-    </div>
+    <button class="main-btn" onclick="swap()">Обміняти зараз</button>
+    <button class="secondary-btn" onclick="takeScreenshot()">📸 Зберегти чек як фото</button>
+    <button class="secondary-btn" onclick="share()">🔗 Поділитися сервісом</button>
 
     <div class="visitor-counter">
-        👥 Переглядів сервісу: <span class="counter-num" id="visit-count">...</span>
+        👥 Переглядів: <span class="counter-num" id="visit-count">...</span>
     </div>
 
-    <div class="footer">Leslav Swap © 2024</div>
+    <div class="footer">Час обробки: 5 хв - 24 год</div>
 </div>
 
 <script>
     function updateCounter() {
-        let count = localStorage.getItem('visit_count');
-        if (!count) count = Math.floor(Math.random() * 200) + 150;
+        let count = localStorage.getItem('visit_count') || 214;
         count = parseInt(count) + 1;
         localStorage.setItem('visit_count', count);
         document.getElementById('visit-count').innerText = count.toLocaleString();
     }
     updateCounter();
 
-    let curVal = 0;
     function calculate() {
         const t = document.getElementById('type').value;
         const a = parseFloat(document.getElementById('amt').value) || 0;
         const r = document.getElementById('res');
-        document.getElementById('l_amt').innerText = "Кількість " + t;
         let target = t==='TON' ? a*100000 : (t==='GRAM' ? a/5000 : a*20000);
-        animate(curVal, Math.floor(target), r);
-        curVal = Math.floor(target);
-    }
-
-    function animate(s, e, obj) {
-        let start = null;
-        const step = (ts) => {
-            if (!start) start = ts;
-            const p = Math.min((ts - start) / 400, 1);
-            const v = Math.floor(p * (e - s) + s);
-            obj.innerText = v.toLocaleString('uk-UA') + " UA";
-            if (p < 1) window.requestAnimationFrame(step);
-        };
-        window.requestAnimationFrame(step);
+        r.innerText = Math.floor(target).toLocaleString('uk-UA') + " UA";
     }
 
     async function paste(id) {
-        try {
-            const text = await navigator.clipboard.readText();
-            document.getElementById(id).value = text;
-        } catch (err) { alert("Вставте вручну"); }
+        const text = await navigator.clipboard.readText();
+        document.getElementById(id).value = text;
+    }
+
+    function takeScreenshot() {
+        html2canvas(document.querySelector("#capture"), {
+            backgroundColor: "#18222d",
+            borderRadius: 28,
+            scale: 2
+        }).then(canvas => {
+            let link = document.createElement('a');
+            link.download = 'leslav-swap-check.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        });
     }
 
     function share() {
         navigator.clipboard.writeText(window.location.href);
-        alert("Скопійовано!");
+        alert("Посилання скопійовано!");
     }
 
     function swap() {

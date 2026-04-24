@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LESLAV SWAP | Фіксований Курс</title>
+    <title>LESLAV SWAP | Точний курс</title>
     <style>
         :root {
             --tg-theme-bg-color: #18222d;
@@ -84,8 +84,8 @@
 <div class="exchange-card">
     <h2>LESLAV SWAP</h2>
     <div class="rate-info">
-        Курс: 1 UA = 0.000010 TON<br>
-        Курс: 1 UA = 5000 PR GRAM
+        1 TON = 100 000 UA<br>
+        5000 PR GRAM = 1 UA
     </div>
 
     <div class="input-group">
@@ -130,7 +130,7 @@
     <button onclick="startExchange()">Обміняти</button>
 
     <div class="footer">
-        Ручний обмін за курсом LESLAV SWAP.
+        Обмін проводиться вручну. Перевірка чека займає до 5 хвилин.
     </div>
 </div>
 
@@ -146,16 +146,17 @@
         let result = 0;
         if (amount > 0) {
             if (type === 'TON') {
-                // Твій курс: 1 UA = 0.000010 TON => 1 TON = 100,000 UA
-                result = amount / 0.000010;
+                // Пряме множення для уникнення помилок ділення
+                result = amount * 100000;
             } else if (type === 'GRAM') {
-                // Твій курс: 5000 GRAM = 1 UA
+                // 5000 GRAM = 1 UA
                 result = amount / 5000;
             } else if (type === 'USD') {
-                // Приблизний курс долара до UA через TON ($5 = 100,000 UA)
+                // Базовий курс долара (можна підправити)
                 result = amount * 20000;
             }
-            resDisplay.innerText = Math.floor(result).toLocaleString();
+            // Округлюємо до цілого числа для гарного вигляду
+            resDisplay.innerText = Math.round(result).toLocaleString('uk-UA');
         } else {
             resDisplay.innerText = "0";
         }

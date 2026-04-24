@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LESLAV SWAP</title>
+    <title>LESLAV SWAP | Калькулятор</title>
     <style>
         :root {
             --tg-theme-bg-color: #18222d;
@@ -21,6 +21,7 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            padding: 20px 0;
         }
 
         .exchange-card {
@@ -34,10 +35,10 @@
         }
 
         h2 { margin: 0 0 5px 0; color: var(--tg-theme-button-color); font-size: 26px; text-transform: uppercase; letter-spacing: 2px; }
-        p { color: var(--tg-theme-hint-color); font-size: 13px; margin-bottom: 25px; }
+        .rate-info { font-size: 12px; color: #4cd964; margin-bottom: 20px; font-weight: bold; }
 
         .input-group { text-align: left; margin-bottom: 15px; }
-        label { display: block; font-size: 11px; margin-bottom: 8px; color: var(--tg-theme-hint-color); text-transform: uppercase; font-weight: bold; }
+        label { display: block; font-size: 11px; margin-bottom: 6px; color: var(--tg-theme-hint-color); text-transform: uppercase; font-weight: bold; }
 
         input, select {
             width: 100%;
@@ -51,7 +52,15 @@
             outline: none;
         }
 
-        option { background: #212d3b; }
+        .calc-res {
+            background: #1c2733;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border: 1px dashed var(--tg-theme-button-color);
+        }
+
+        .calc-res span { color: var(--tg-theme-button-color); font-size: 18px; font-weight: bold; }
 
         button {
             width: 100%;
@@ -65,10 +74,7 @@
             cursor: pointer;
             margin-top: 10px;
             text-transform: uppercase;
-            box-shadow: 0 4px 15px rgba(46, 166, 255, 0.2);
         }
-
-        button:active { transform: scale(0.98); }
 
         .footer { margin-top: 20px; font-size: 11px; color: var(--tg-theme-hint-color); line-height: 1.4; }
     </style>
@@ -77,62 +83,73 @@
 
 <div class="exchange-card">
     <h2>LESLAV SWAP</h2>
-    <p>Твій надійний міст між іграми та UA</p>
+    <div class="rate-info">Курс: 1 TON = 100,000 UA</div>
 
     <div class="input-group">
-        <label>Виберіть сервіс (Тип чеку)</label>
+        <label>Скільки TON ви віддаєте?</label>
+        <input type="number" id="amount_input" placeholder="0.00" oninput="calculate()">
+    </div>
+
+    <div class="calc-res">
+        Ви отримаєте приблизно:<br>
+        <span id="result_display">0</span> UA
+    </div>
+
+    <div class="input-group">
+        <label>Тип чеку</label>
         <select id="service_select">
             <option value="PR GRAM">Чек PR GRAM</option>
             <option value="iCryptoCheck">Чек iCryptoCheck</option>
             <option value="Crypto Bot">Чек Crypto Bot</option>
             <option value="xRocket">Чек xRocket</option>
-            <option value="Інший сервіс">Інший сервіс</option>
-        </select>
-    </div>
-
-    <div class="input-group">
-        <label>Валюта, яку міняєте</label>
-        <select id="currency_select">
-            <option value="PR GRAM">PR GRAM</option>
-            <option value="UA (Токен)">UA (Токен)</option>
-            <option value="TON">TON</option>
-            <option value="USDT">USDT</option>
-            <option value="NOT">NOT</option>
-            <option value="Інша">Інша валюта</option>
         </select>
     </div>
 
     <div class="input-group">
         <label>Посилання на чек</label>
-        <input type="text" id="check_link" placeholder="Вставте посилання на чек">
+        <input type="text" id="check_link" placeholder="Вставте посилання">
     </div>
 
     <div class="input-group">
-        <label>Ваш гаманець TON для отримання</label>
-        <input type="text" id="wallet_address" placeholder="UQ... або EQ...">
+        <label>Ваш гаманець TON</label>
+        <input type="text" id="wallet_address" placeholder="UQ...">
     </div>
 
-    <button onclick="startExchange()">Обміняти зараз</button>
+    <button onclick="startExchange()">Обміняти</button>
 
     <div class="footer">
-        Швидка перевірка та виплата.<br>Працюємо 24/7 у ручному режимі.
+        Розрахунок базується на курсі 0.00001 TON за 1 UA.
     </div>
 </div>
 
 <script>
+    function calculate() {
+        const amount = document.getElementById('amount_input').value;
+        const resultDisplay = document.getElementById('result_display');
+        
+        if (amount > 0) {
+            // 1 UA = 0.000010 TON => 1 TON = 100,000 UA
+            const uaAmount = amount * 100000;
+            resultDisplay.innerText = uaAmount.toLocaleString();
+        } else {
+            resultDisplay.innerText = "0";
+        }
+    }
+
     function startExchange() {
+        const amount = document.getElementById('amount_input').value;
+        const uaReceived = document.getElementById('result_display').innerText;
         const service = document.getElementById('service_select').value;
-        const currency = document.getElementById('currency_select').value;
         const check = document.getElementById('check_link').value.trim();
         const wallet = document.getElementById('wallet_address').value.trim();
         const myTelegram = "Leslav"; 
 
-        if (!check || !wallet) {
+        if (!check || !wallet || !amount) {
             alert("Будь ласка, заповніть всі поля!");
             return;
         }
 
-        const message = `🚀 НОВА ЗАЯВКА: LESLAV SWAP\n\n🔹 Сервіс: ${service}\n💰 Валюта: ${currency}\n🔗 Чек: ${check}\n💎 Гаманець: ${wallet}`;
+        const message = `🚀 ЗАЯВКА LESLAV SWAP\n\n💰 Віддаю: ${amount} TON\n📥 Отримую: ${uaReceived} UA\n🔹 Сервіс: ${service}\n🔗 Чек: ${check}\n💎 Гаманець: ${wallet}`;
         const url = `https://t.me/${myTelegram}?text=${encodeURIComponent(message)}`;
 
         window.open(url, '_blank');

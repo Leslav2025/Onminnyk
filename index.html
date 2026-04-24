@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LESLAV SWAP | Premium Exchange</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
         :root {
             --bg: #18222d;
@@ -46,8 +46,6 @@
 
         h2 { text-align: center; margin: 5px 0; font-size: 22px; }
         .rate-badge { text-align: center; background: rgba(255,255,255,0.05); padding: 8px; border-radius: 12px; font-size: 11px; margin-bottom: 15px; }
-
-        .widget { margin-bottom: 15px; border-radius: 12px; overflow: hidden; height: 40px; }
 
         .input-group { margin-bottom: 12px; text-align: left; }
         label { display: block; font-size: 10px; color: var(--hint); text-transform: uppercase; margin-bottom: 5px; font-weight: bold; }
@@ -121,8 +119,8 @@
         </div>
     </div>
 
-    <button class="main-btn" onclick="swap()">Обміняти зараз</button>
-    <button class="secondary-btn" onclick="takeScreenshot()">📸 Зберегти чек як фото</button>
+    <button class="main-btn" onclick="swap()">Оформити обмін</button>
+    <button class="secondary-btn" id="btn-photo" onclick="takeScreenshot()">📸 Зберегти чек як фото</button>
     <button class="secondary-btn" onclick="share()">🔗 Поділитися сервісом</button>
 
     <div class="visitor-counter">
@@ -134,7 +132,7 @@
 
 <script>
     function updateCounter() {
-        let count = localStorage.getItem('visit_count') || 214;
+        let count = localStorage.getItem('visit_count') || 100;
         count = parseInt(count) + 1;
         localStorage.setItem('visit_count', count);
         document.getElementById('visit-count').innerText = count.toLocaleString();
@@ -150,20 +148,31 @@
     }
 
     async function paste(id) {
-        const text = await navigator.clipboard.readText();
-        document.getElementById(id).value = text;
+        try {
+            const text = await navigator.clipboard.readText();
+            document.getElementById(id).value = text;
+        } catch (e) { alert("Вставте текст вручну"); }
     }
 
     function takeScreenshot() {
+        const btn = document.getElementById('btn-photo');
+        btn.innerText = "⏳ Створюємо фото...";
+        
         html2canvas(document.querySelector("#capture"), {
             backgroundColor: "#18222d",
-            borderRadius: 28,
-            scale: 2
+            scale: 2,
+            useCORS: true,
+            logging: false
         }).then(canvas => {
-            let link = document.createElement('a');
+            const dataUrl = canvas.toDataURL("image/png");
+            const link = document.createElement('a');
             link.download = 'leslav-swap-check.png';
-            link.href = canvas.toDataURL();
+            link.href = dataUrl;
             link.click();
+            btn.innerText = "📸 Зберегти чек як фото";
+        }).catch(err => {
+            alert("Помилка створення фото. Спробуйте через звичайний браузер.");
+            btn.innerText = "📸 Зберегти чек як фото";
         });
     }
 

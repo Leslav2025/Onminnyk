@@ -159,7 +159,6 @@
 </div>
 
 <script>
-    // Калькулятор
     function calculate() {
         const type = document.getElementById('type').value;
         const amount = parseFloat(document.getElementById('amt').value) || 0;
@@ -180,7 +179,6 @@
         result.innerText = Math.floor(total).toLocaleString('uk-UA') + " UA";
     }
 
-    // Вставка з буфера
     async function paste(id) {
         try {
             const text = await navigator.clipboard.readText();
@@ -188,13 +186,13 @@
         } catch (e) { alert("Будь ласка, вставте вручну"); }
     }
 
-    // Поділитися
+    // ТЕПЕР КОПІЮЄ ПОСИЛАННЯ НА БОТА
     function share() {
-        navigator.clipboard.writeText(window.location.href);
-        alert("Посилання скопійовано!");
+        const botUrl = "http://t.me/Leslaswap_bot";
+        navigator.clipboard.writeText(botUrl);
+        alert("Посилання на бота скопійовано!");
     }
 
-    // Оформлення заявки
     function swap() {
         const a = document.getElementById('amt').value;
         const w = document.getElementById('wal').value;
@@ -207,7 +205,6 @@
         window.open(`https://t.me/Leslav?text=${encodeURIComponent(m)}`);
     }
 
-    // Відгуки
     function openModal() { document.getElementById('reviewModal').style.display = 'flex'; }
     function closeModal() { document.getElementById('reviewModal').style.display = 'none'; }
     function sendReview() {
@@ -218,7 +215,6 @@
         closeModal();
     }
 
-    // Лічильник
     let count = localStorage.getItem('visit_count') || 208;
     count = parseInt(count) + 1;
     localStorage.setItem('visit_count', count);

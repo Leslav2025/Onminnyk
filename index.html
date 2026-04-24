@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LESLAV SWAP | Premium Exchange</title>
-    <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
     <style>
         :root {
             --bg: #18222d;
@@ -13,6 +12,7 @@
             --text: #ffffff;
             --hint: #b1c3d5;
             --success: #4cd964;
+            --overlay: rgba(0, 0, 0, 0.85);
         }
 
         body {
@@ -33,8 +33,14 @@
             box-shadow: 0 15px 35px rgba(0,0,0,0.6);
             width: 90%;
             max-width: 380px;
+            position: relative;
             border: 1px solid rgba(255,255,255,0.08);
         }
+
+        /* Status & Logo */
+        .status { position: absolute; top: 20px; right: 20px; font-size: 10px; color: var(--success); font-weight: bold; display: flex; align-items: center; }
+        .dot { width: 8px; height: 8px; background: var(--success); border-radius: 50%; margin-right: 5px; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(76, 217, 100, 0.7); } 70% { box-shadow: 0 0 0 8px rgba(76, 217, 100, 0); } 100% { box-shadow: 0 0 0 0 rgba(76, 217, 100, 0); } }
 
         .ton-logo { width: 60px; height: 60px; margin: 0 auto 10px; background: var(--accent); border-radius: 50%; display: flex; justify-content: center; align-items: center; }
         .ton-logo svg { width: 35px; fill: white; }
@@ -42,24 +48,38 @@
         h2 { text-align: center; margin: 5px 0; font-size: 22px; letter-spacing: 1px; }
         .rate-badge { text-align: center; background: rgba(255,255,255,0.05); padding: 8px; border-radius: 12px; font-size: 11px; margin-bottom: 15px; }
 
+        /* Inputs */
         .input-group { margin-bottom: 12px; text-align: left; }
         label { display: block; font-size: 10px; color: var(--hint); text-transform: uppercase; margin-bottom: 5px; font-weight: bold; }
-        input, select { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #2f3e4e; background: #1c2733; color: white; outline: none; box-sizing: border-box; font-size: 14px; }
+        input, select, textarea { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #2f3e4e; background: #1c2733; color: white; outline: none; box-sizing: border-box; font-size: 14px; }
         
+        .input-wrapper { position: relative; display: flex; align-items: center; }
+        .paste-btn { position: absolute; right: 10px; background: none; border: none; color: var(--accent); cursor: pointer; font-size: 16px; }
+
         .calc-res { background: rgba(0,136,204,0.1); padding: 15px; border-radius: 18px; text-align: center; border: 1px solid var(--accent); margin: 15px 0; }
         .calc-res span { color: var(--accent); font-size: 28px; font-weight: 800; display: block; }
 
-        .main-btn { width: 100%; padding: 16px; background: var(--accent); color: white; border: none; border-radius: 14px; font-weight: bold; cursor: pointer; text-transform: uppercase; margin-bottom: 10px; transition: 0.3s; }
-        .pay-btn { background: var(--success); display: flex; align-items: center; justify-content: center; gap: 8px; }
-        
-        #ton-connect-button { display: flex; justify-content: center; margin-bottom: 15px; }
+        .main-btn { width: 100%; padding: 16px; background: var(--accent); color: white; border: none; border-radius: 14px; font-weight: bold; cursor: pointer; text-transform: uppercase; margin-bottom: 10px; }
+        .row-btns { display: flex; gap: 10px; margin-bottom: 15px; }
+        .secondary-btn { flex: 1; padding: 10px; background: transparent; color: var(--hint); border: 1px solid #2f3e4e; border-radius: 12px; font-size: 12px; cursor: pointer; }
 
-        .footer { font-size: 11px; color: var(--hint); text-align: center; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px; margin-top: 10px; }
+        /* Modal Review */
+        .modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background: var(--overlay); justify-content: center; align-items: center; }
+        .modal-content { background: var(--card); padding: 25px; border-radius: 24px; width: 85%; max-width: 320px; border: 1px solid var(--accent); }
+        .modal-content h3 { margin-top: 0; font-size: 18px; text-align: center; }
+        .close-modal { float: right; color: var(--hint); font-size: 20px; cursor: pointer; }
+
+        .visitor-counter { margin-bottom: 15px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 12px; font-size: 11px; color: var(--hint); display: flex; justify-content: center; align-items: center; gap: 8px; }
+        .counter-num { color: var(--success); font-weight: bold; font-family: monospace; font-size: 14px; }
+
+        .footer { font-size: 11px; color: var(--hint); text-align: center; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px; }
+        .author-line { display: flex; justify-content: center; align-items: center; gap: 5px; margin-top: 5px; }
     </style>
 </head>
 <body>
 
 <div class="exchange-card">
+    <div class="status"><div class="dot"></div> Online</div>
     <div class="ton-logo">
         <svg viewBox="0 0 512 512"><path d="M256 0C114.6 0 0 114.6 0 256s114.6 256 256 256s256-114.6 256-256S397.4 0 256 0zM380.1 169.5L271.7 394c-4.4 9.1-13.4 14.8-23.5 14.8s-19.1-5.7-23.5-14.8L116.3 169.5c-4.1-8.5-3.3-18.6 2.1-26.3c5.4-7.7 14.4-12.3 23.9-12.3h220.1c9.5 0 18.5 4.6 23.9 12.3c5.7 7.7 6.5 17.8 2.4 26.3z"></path></svg>
     </div>
@@ -84,94 +104,116 @@
         Ви отримаєте:<br><span id="res">0 UA</span>
     </div>
 
-    <div id="ton-connect-button"></div>
-
-    <button class="main-btn pay-btn" id="btn-pay" onclick="payDirectly()">
-        💎 ОПЛАТИТИ ЧЕРЕЗ ГАМАНЕЦЬ
-    </button>
-
-    <div style="text-align: center; margin: 15px 0; font-size: 10px; color: var(--hint); border-top: 1px solid #2f3e4e; padding-top: 15px;">АБО ОФОРМИТИ ЧЕРЕЗ ЧЕК</div>
-
     <div class="input-group">
         <label>Сервіс чеку</label>
-        <select id="service">
-            <option value="Crypto Bot">Crypto Bot</option>
-            <option value="xRocket">xRocket</option>
-            <option value="PR GRAM">PR GRAM</option>
-            <option value="iCryptoCheck">iCryptoCheck</option>
+        <select id="service_select">
+            <option value="Crypto Bot">Чек Crypto Bot</option>
+            <option value="xRocket">Чек xRocket</option>
+            <option value="PR GRAM">Чек PR GRAM</option>
+            <option value="iCryptoCheck">Чек iCryptoCheck</option>
         </select>
     </div>
 
     <div class="input-group">
         <label>Ваш гаманець TON (UQ...)</label>
-        <input type="text" id="wal" placeholder="Адреса для отримання UA">
+        <div class="input-wrapper">
+            <input type="text" id="wal" placeholder="Адреса отримувача">
+            <button class="paste-btn" onclick="paste('wal')">📋</button>
+        </div>
     </div>
 
     <div class="input-group">
         <label>Посилання на чек</label>
-        <input type="text" id="chk" placeholder="t.me/...">
+        <div class="input-wrapper">
+            <input type="text" id="chk" placeholder="t.me/...">
+            <button class="paste-btn" onclick="paste('chk')">📋</button>
+        </div>
     </div>
 
-    <button class="main-btn" onclick="swap()">ВІДПРАВИТИ ЗАЯВКУ</button>
+    <button class="main-btn" onclick="swap()">ОФОРМИТИ ОБМІН</button>
     
+    <div class="row-btns">
+        <button class="secondary-btn" onclick="openModal()">⭐️ Відгук</button>
+        <button class="secondary-btn" onclick="share()">🔗 Поділитися</button>
+    </div>
+
+    <div class="visitor-counter">
+        👥 Переглядів сервісу: <span class="counter-num" id="visit-count">...</span>
+    </div>
+
     <div class="footer">
-        © 2026 <b>Leslav</b> & <b>Gemini AI</b>
+        <div class="author-line">© 2026 <b>Leslav</b> & <b>Gemini AI</b></div>
+    </div>
+</div>
+
+<div id="reviewModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeModal()">&times;</span>
+        <h3>Залишити відгук</h3>
+        <div class="input-group">
+            <label>Ваше ім'я / @Username</label>
+            <input type="text" id="rev_name" placeholder="Як вас звати?">
+        </div>
+        <div class="input-group">
+            <label>Повідомлення</label>
+            <textarea id="rev_msg" rows="4" placeholder="Напишіть ваші враження..."></textarea>
+        </div>
+        <button class="main-btn" onclick="sendReview()">ВІДПРАВИТИ</button>
     </div>
 </div>
 
 <script>
-    const MY_WALLET = "UQDXq1iAqu88tVRG62_k03kAXELu_1gzRBMye-VZoFRIRtWw";
-
-    // Ініціалізація зв'язку з гаманцем
-    const tonConnectUI = new TONConnectUI.TonConnectUI({
-        manifestUrl: 'https://leslav2025.github.io/Onminnyk/tonconnect-manifest.json',
-        buttonRootId: 'ton-connect-button'
-    });
+    function updateCounter() {
+        let count = localStorage.getItem('visit_count') || 198;
+        count = parseInt(count) + 1;
+        localStorage.setItem('visit_count', count);
+        document.getElementById('visit-count').innerText = count.toLocaleString();
+    }
+    updateCounter();
 
     function calculate() {
         const t = document.getElementById('type').value;
         const a = parseFloat(document.getElementById('amt').value) || 0;
+        const r = document.getElementById('res');
         document.getElementById('l_amt').innerText = "Кількість " + t;
         let target = t==='TON' ? a*100000 : (t==='GRAM' ? a/5000 : a*20000);
-        document.getElementById('res').innerText = Math.floor(target).toLocaleString('uk-UA') + " UA";
+        r.innerText = Math.floor(target).toLocaleString('uk-UA') + " UA";
     }
 
-    async function payDirectly() {
-        if (!tonConnectUI.connected) {
-            alert("Будь ласка, натисніть синю кнопку 'Connect Wallet' вище, щоб підключити свій гаманець!");
-            tonConnectUI.openModal();
-            return;
-        }
-
-        const amount = document.getElementById('amt').value;
-        if(!amount || amount <= 0) return alert("Введіть кількість монет!");
-
-        const transaction = {
-            validUntil: Math.floor(Date.now() / 1000) + 60,
-            messages: [{
-                address: MY_WALLET,
-                amount: (amount * 1000000000).toString() // Конвертація в нанотони
-            }]
-        };
-
+    async function paste(id) {
         try {
-            await tonConnectUI.sendTransaction(transaction);
-            alert("Транзакцію успішно надіслано в гаманець!");
-        } catch (e) {
-            alert("Помилка оплати або скасовано.");
-        }
+            const text = await navigator.clipboard.readText();
+            document.getElementById(id).value = text;
+        } catch (e) { alert("Вставте вручну"); }
+    }
+
+    function share() {
+        navigator.clipboard.writeText(window.location.href);
+        alert("Посилання скопійовано!");
     }
 
     function swap() {
         const a = document.getElementById('amt').value;
         const w = document.getElementById('wal').value;
         const c = document.getElementById('chk').value;
-        const t = document.getElementById('type').value;
-        const s = document.getElementById('service').value;
-        if(!a || !w || !c) return alert("Заповніть усі поля заявки!");
-        
-        const m = `🚀 НОВА ЗАЯВКА\n\n💰 Сума: ${a} ${t}\n📥 Отримаю: ${document.getElementById('res').innerText}\n🔹 Сервіс: ${s}\n💎 Гаманець: ${w}\n🔗 Чек: ${c}`;
+        const s = document.getElementById('service_select').value;
+        if(!a || !w || !c) return alert("Заповніть поля!");
+        const m = `🚀 ЗАЯВКА: ${a} ${document.getElementById('type').value}\n📥 Отримаю: ${document.getElementById('res').innerText}\n🔹 Сервіс: ${s}\n💎 Гаманець: ${w}\n🔗 Чек: ${c}`;
         window.open(`https://t.me/Leslav?text=${encodeURIComponent(m)}`);
+    }
+
+    // Логіка відгуків
+    function openModal() { document.getElementById('reviewModal').style.display = 'flex'; }
+    function closeModal() { document.getElementById('reviewModal').style.display = 'none'; }
+    
+    function sendReview() {
+        const name = document.getElementById('rev_name').value;
+        const msg = document.getElementById('rev_msg').value;
+        if(!name || !msg) return alert("Будь ласка, заповніть усі поля відгуку!");
+        
+        const reviewText = `⭐️ НОВИЙ ВІДГУК\n\n👤 Від кого: ${name}\n💬 Повідомлення: ${msg}\n\n#відгук`;
+        window.open(`https://t.me/Leslav?text=${encodeURIComponent(reviewText)}`);
+        closeModal();
     }
 </script>
 </body>

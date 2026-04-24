@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LESLAV SWAP | Точний курс</title>
+    <title>LESLAV SWAP | TON Blockchain</title>
     <style>
         :root {
             --tg-theme-bg-color: #18222d;
-            --tg-theme-button-color: #2ea6ff;
+            --tg-theme-button-color: #0088cc;
             --tg-theme-text-color: #ffffff;
             --tg-theme-hint-color: #b1c3d5;
+            --ton-blue: #0088cc;
         }
 
         body {
@@ -27,23 +28,43 @@
         .exchange-card {
             background: #212d3b;
             padding: 25px;
-            border-radius: 20px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             width: 90%;
             max-width: 380px;
             text-align: center;
+            border: 1px solid rgba(255,255,255,0.05);
         }
 
-        h2 { margin: 0 0 5px 0; color: var(--tg-theme-button-color); font-size: 24px; text-transform: uppercase; letter-spacing: 1.5px; }
-        .rate-info { font-size: 11px; color: #4cd964; margin-bottom: 15px; line-height: 1.4; }
+        /* Стилізація логотипа TON */
+        .ton-logo {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 15px;
+            background: var(--ton-blue);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 15px rgba(0, 136, 204, 0.4);
+        }
 
-        .input-group { text-align: left; margin-bottom: 12px; }
+        .ton-logo svg {
+            width: 35px;
+            height: 35px;
+            fill: white;
+        }
+
+        h2 { margin: 5px 0; color: white; font-size: 24px; text-transform: uppercase; letter-spacing: 1.5px; }
+        .rate-info { font-size: 11px; color: #4cd964; margin-bottom: 20px; font-weight: bold; background: rgba(76, 217, 100, 0.1); padding: 5px; border-radius: 8px; }
+
+        .input-group { text-align: left; margin-bottom: 12px; position: relative; }
         label { display: block; font-size: 10px; margin-bottom: 5px; color: var(--tg-theme-hint-color); text-transform: uppercase; font-weight: bold; }
 
         input, select {
             width: 100%;
-            padding: 12px;
-            border-radius: 10px;
+            padding: 14px;
+            border-radius: 12px;
             border: 1px solid #2f3e4e;
             background: #1c2733;
             color: white;
@@ -53,47 +74,65 @@
         }
 
         .calc-res {
-            background: rgba(46, 166, 255, 0.1);
+            background: rgba(0, 136, 204, 0.1);
             padding: 15px;
-            border-radius: 12px;
+            border-radius: 14px;
             margin: 15px 0;
-            border: 1px solid var(--tg-theme-button-color);
+            border: 1px solid var(--ton-blue);
         }
 
-        .calc-res span { color: var(--tg-theme-button-color); font-size: 22px; font-weight: bold; }
+        .calc-res span { color: var(--ton-blue); font-size: 24px; font-weight: 800; }
 
         button {
             width: 100%;
-            padding: 16px;
-            background-color: var(--tg-theme-button-color);
+            padding: 18px;
+            background-color: var(--ton-blue);
             color: white;
             border: none;
-            border-radius: 10px;
+            border-radius: 12px;
             font-size: 16px;
             font-weight: bold;
             cursor: pointer;
             margin-top: 10px;
             text-transform: uppercase;
+            box-shadow: 0 4px 15px rgba(0, 136, 204, 0.3);
         }
 
         .footer { margin-top: 15px; font-size: 10px; color: var(--tg-theme-hint-color); line-height: 1.4; }
+        
+        .blockchain-tag {
+            display: inline-flex;
+            align-items: center;
+            background: #1c2733;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 9px;
+            color: #4cd964;
+            margin-top: 5px;
+            border: 1px solid #2f3e4e;
+        }
     </style>
 </head>
 <body>
 
 <div class="exchange-card">
+    <div class="ton-logo">
+        <svg viewBox="0 0 512 512">
+            <path d="M256 0C114.6 0 0 114.6 0 256s114.6 256 256 256s256-114.6 256-256S397.4 0 256 0zM380.1 169.5L271.7 394c-4.4 9.1-13.4 14.8-23.5 14.8s-19.1-5.7-23.5-14.8L116.3 169.5c-4.1-8.5-3.3-18.6 2.1-26.3c5.4-7.7 14.4-12.3 23.9-12.3h220.1c9.5 0 18.5 4.6 23.9 12.3c5.7 7.7 6.5 17.8 2.4 26.3z"></path>
+        </svg>
+    </div>
+    
     <h2>LESLAV SWAP</h2>
     <div class="rate-info">
-        1 TON = 100 000 UA<br>
-        5000 PR GRAM = 1 UA
+        1 TON = 100 000 UA | 5000 GRAM = 1 UA
     </div>
 
     <div class="input-group">
-        <label>Валюта, яку віддаєте</label>
+        <label>Віддаєте (Валюта чека)</label>
         <select id="currency_type" onchange="calculate()">
             <option value="TON">TON</option>
             <option value="GRAM">PR GRAM</option>
-            <option value="USD">Долари ($)</option>
+            <option value="USD">USD ($)</option>
         </select>
     </div>
 
@@ -118,45 +157,42 @@
     </div>
 
     <div class="input-group">
-        <label>Посилання на чек</label>
-        <input type="text" id="check_link" placeholder="Вставте посилання">
+        <label>Посилання на ваш чек</label>
+        <input type="text" id="check_link" placeholder="https://t.me/...">
     </div>
 
     <div class="input-group">
-        <label>Ваш гаманець TON (UQ...)</label>
-        <input type="text" id="wallet_address" placeholder="Вставте адресу">
+        <label>Ваш гаманець для отримання UA</label>
+        <input type="text" id="wallet_address" placeholder="UQ... або EQ...">
+        <div class="blockchain-tag">● Тільки мережа TON Blockchain</div>
     </div>
 
-    <button onclick="startExchange()">Обміняти</button>
+    <button onclick="startExchange()">Обміняти зараз</button>
 
     <div class="footer">
-        Обмін проводиться вручну. Перевірка чека займає до 5 хвилин.
+        Виплати здійснюються вручну на вказану TON-адресу.<br>Час обробки: до 5 хвилин.
     </div>
 </div>
 
 <script>
     function calculate() {
         const type = document.getElementById('currency_type').value;
-        const amount = document.getElementById('amount_input').value;
+        const amount = parseFloat(document.getElementById('amount_input').value);
         const label = document.getElementById('amount_label');
         const resDisplay = document.getElementById('result_display');
         
-        label.innerText = "Кількість " + (type === 'USD' ? 'Доларів ($)' : type);
+        label.innerText = "Кількість " + type;
 
         let result = 0;
         if (amount > 0) {
             if (type === 'TON') {
-                // Пряме множення для уникнення помилок ділення
                 result = amount * 100000;
             } else if (type === 'GRAM') {
-                // 5000 GRAM = 1 UA
                 result = amount / 5000;
             } else if (type === 'USD') {
-                // Базовий курс долара (можна підправити)
                 result = amount * 20000;
             }
-            // Округлюємо до цілого числа для гарного вигляду
-            resDisplay.innerText = Math.round(result).toLocaleString('uk-UA');
+            resDisplay.innerText = Math.round(result).toLocaleString('uk-UA').replace(/,/g, ' ');
         } else {
             resDisplay.innerText = "0";
         }
@@ -170,15 +206,13 @@
         const check = document.getElementById('check_link').value.trim();
         const wallet = document.getElementById('wallet_address').value.trim();
         
-        const myTelegram = "Leslav"; 
-
         if (!check || !wallet || !amount) {
-            alert("Будь ласка, заповніть всі поля!");
+            alert("Заповніть всі поля для створення заявки!");
             return;
         }
 
-        const message = `🚀 ЗАЯВКА LESLAV SWAP\n\n💰 Клієнт віддає: ${amount} ${type}\n📥 Має отримати: ${resultUA} UA\n🔹 Через: ${service}\n🔗 Чек: ${check}\n💎 Гаманець: ${wallet}`;
-        const url = `https://t.me/${myTelegram}?text=${encodeURIComponent(message)}`;
+        const message = `🚀 ЗАЯВКА: LESLAV SWAP\n\n💰 Віддаю: ${amount} ${type}\n📥 Отримую: ${resultUA} UA\n🔹 Сервіс: ${service}\n🔗 Чек: ${check}\n💎 Гаманець (TON): ${wallet}`;
+        const url = `https://t.me/Leslav?text=${encodeURIComponent(message)}`;
 
         window.open(url, '_blank');
     }

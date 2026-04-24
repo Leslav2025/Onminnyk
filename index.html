@@ -34,10 +34,8 @@
             max-width: 380px;
             position: relative;
             border: 1px solid rgba(255,255,255,0.08);
-            overflow: hidden;
         }
 
-        /* Status & Logo */
         .status { position: absolute; top: 20px; right: 20px; font-size: 10px; color: var(--success); font-weight: bold; display: flex; align-items: center; }
         .dot { width: 8px; height: 8px; background: var(--success); border-radius: 50%; margin-right: 5px; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(76, 217, 100, 0.7); } 70% { box-shadow: 0 0 0 8px rgba(76, 217, 100, 0); } 100% { box-shadow: 0 0 0 0 rgba(76, 217, 100, 0); } }
@@ -45,48 +43,32 @@
         .ton-logo { width: 60px; height: 60px; margin: 0 auto 10px; background: var(--accent); border-radius: 50%; display: flex; justify-content: center; align-items: center; }
         .ton-logo svg { width: 35px; fill: white; }
 
-        h2 { text-align: center; margin: 5px 0; font-size: 22px; letter-spacing: 1px; }
+        h2 { text-align: center; margin: 5px 0; font-size: 22px; }
         .rate-badge { text-align: center; background: rgba(255,255,255,0.05); padding: 8px; border-radius: 12px; font-size: 11px; margin-bottom: 15px; }
 
-        /* Widget */
         .widget { margin-bottom: 15px; border-radius: 12px; overflow: hidden; height: 40px; }
 
-        .input-group { margin-bottom: 15px; text-align: left; }
+        .input-group { margin-bottom: 12px; text-align: left; }
         label { display: block; font-size: 10px; color: var(--hint); text-transform: uppercase; margin-bottom: 5px; font-weight: bold; }
         
         .input-wrapper { position: relative; display: flex; align-items: center; }
-        input, select { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #2f3e4e; background: #1c2733; color: white; outline: none; transition: 0.3s; }
-        input:focus { border-color: var(--accent); }
+        input, select { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #2f3e4e; background: #1c2733; color: white; outline: none; box-sizing: border-box; }
         .paste-btn { position: absolute; right: 10px; background: none; border: none; color: var(--accent); cursor: pointer; font-size: 14px; padding: 5px; }
 
         .calc-res { background: rgba(0,136,204,0.1); padding: 15px; border-radius: 18px; text-align: center; border: 1px solid var(--accent); margin: 15px 0; }
         .calc-res span { color: var(--accent); font-size: 28px; font-weight: 800; display: block; }
 
         .main-btn { width: 100%; padding: 16px; background: var(--accent); color: white; border: none; border-radius: 14px; font-weight: bold; cursor: pointer; text-transform: uppercase; margin-bottom: 10px; }
-        .share-btn { width: 100%; padding: 10px; background: transparent; color: var(--hint); border: 1px solid #2f3e4e; border-radius: 12px; font-size: 12px; cursor: pointer; }
+        .share-btn { width: 100%; padding: 10px; background: transparent; color: var(--hint); border: 1px solid #2f3e4e; border-radius: 12px; font-size: 12px; cursor: pointer; margin-bottom: 15px; }
 
-        /* FAQ */
-        .faq-section { margin-top: 20px; text-align: left; }
-        details { background: #1c2733; border-radius: 10px; margin-bottom: 5px; padding: 10px; font-size: 12px; border: 1px solid rgba(255,255,255,0.03); }
+        details { background: #1c2733; border-radius: 10px; margin-bottom: 5px; padding: 10px; font-size: 12px; text-align: left; }
         summary { cursor: pointer; font-weight: bold; outline: none; }
         details p { margin-top: 8px; color: var(--hint); line-height: 1.4; }
 
-        /* Counter */
-        .visitor-counter {
-            margin-top: 20px;
-            padding: 10px;
-            background: rgba(0,0,0,0.2);
-            border-radius: 12px;
-            font-size: 11px;
-            color: var(--hint);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-        }
+        .visitor-counter { margin-top: 15px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 12px; font-size: 11px; color: var(--hint); display: flex; justify-content: center; align-items: center; gap: 8px; }
         .counter-num { color: var(--success); font-weight: bold; font-family: monospace; font-size: 14px; }
 
-        .footer { margin-top: 20px; font-size: 10px; color: var(--hint); text-align: center; opacity: 0.8; }
+        .footer { margin-top: 20px; font-size: 10px; color: var(--hint); text-align: center; }
     </style>
 </head>
 <body>
@@ -122,6 +104,24 @@
     </div>
 
     <div class="input-group">
+        <label>Сервіс чеку</label>
+        <select id="service_select">
+            <option value="Crypto Bot">Чек Crypto Bot</option>
+            <option value="xRocket">Чек xRocket</option>
+            <option value="PR GRAM">Чек PR GRAM</option>
+            <option value="iCryptoCheck">Чек iCryptoCheck</option>
+        </select>
+    </div>
+
+    <div class="input-group">
+        <label>Посилання на чек</label>
+        <div class="input-wrapper">
+            <input type="text" id="chk" placeholder="https://t.me/...">
+            <button class="paste-btn" onclick="paste('chk')">📋</button>
+        </div>
+    </div>
+
+    <div class="input-group">
         <label>Ваш гаманець TON</label>
         <div class="input-wrapper">
             <input type="text" id="wal" placeholder="UQ... або EQ...">
@@ -129,42 +129,25 @@
         </div>
     </div>
 
-    <div class="input-group">
-        <label>Посилання на чек</label>
-        <div class="input-wrapper">
-            <input type="text" id="chk" placeholder="Вставте чек...">
-            <button class="paste-btn" onclick="paste('chk')">📋</button>
-        </div>
-    </div>
-
     <button class="main-btn" onclick="swap()">Оформити обмін</button>
     <button class="share-btn" onclick="share()">🔗 Копіювати посилання</button>
 
     <div class="faq-section">
-        <details>
-            <summary>Скільки чекати?</summary>
-            <p>Від 5 хвилин до 24 годин. Обробка йде в порядку черги.</p>
-        </details>
-        <details>
-            <summary>Куди прийдуть UA?</summary>
-            <p>На вказаний вами гаманець у мережі TON Blockchain.</p>
-        </details>
+        <details><summary>Скільки чекати?</summary><p>Від 5 хвилин до 24 годин.</p></details>
+        <details><summary>Куди прийдуть UA?</summary><p>На вказаний гаманець TON.</p></details>
     </div>
 
     <div class="visitor-counter">
         👥 Переглядів сервісу: <span class="counter-num" id="visit-count">...</span>
     </div>
 
-    <div class="footer">
-        Leslav Swap © 2024 | Secure Exchange
-    </div>
+    <div class="footer">Leslav Swap © 2024</div>
 </div>
 
 <script>
-    // Логіка лічильника (імітація для GitHub Pages, бо там немає бази даних)
     function updateCounter() {
         let count = localStorage.getItem('visit_count');
-        if (!count) count = Math.floor(Math.random() * 500) + 100; // Початкове число
+        if (!count) count = Math.floor(Math.random() * 200) + 150;
         count = parseInt(count) + 1;
         localStorage.setItem('visit_count', count);
         document.getElementById('visit-count').innerText = count.toLocaleString();
@@ -198,20 +181,21 @@
         try {
             const text = await navigator.clipboard.readText();
             document.getElementById(id).value = text;
-        } catch (err) { alert("Надайте доступ до буфера обміну"); }
+        } catch (err) { alert("Вставте вручну"); }
     }
 
     function share() {
         navigator.clipboard.writeText(window.location.href);
-        alert("Посилання скопійовано! 🚀");
+        alert("Скопійовано!");
     }
 
     function swap() {
         const a = document.getElementById('amt').value;
         const w = document.getElementById('wal').value;
         const c = document.getElementById('chk').value;
+        const s = document.getElementById('service_select').value;
         if(!a || !w || !c) return alert("Заповніть всі поля!");
-        const m = `🚀 ЗАЯВКА: ${a} ${document.getElementById('type').value}\n📥 Отримую: ${document.getElementById('res').innerText}\n💎 Гаманець: ${w}\n🔗 Чек: ${c}`;
+        const m = `🚀 ЗАЯВКА: ${a} ${document.getElementById('type').value}\n📥 Отримаю: ${document.getElementById('res').innerText}\n🔹 Сервіс: ${s}\n💎 Гаманець: ${w}\n🔗 Чек: ${c}`;
         window.open(`https://t.me/Leslav?text=${encodeURIComponent(m)}`);
     }
 </script>

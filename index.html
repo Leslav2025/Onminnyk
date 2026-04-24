@@ -37,7 +37,6 @@
             border: 1px solid rgba(255,255,255,0.08);
         }
 
-        /* Status & Logo */
         .status { position: absolute; top: 20px; right: 20px; font-size: 10px; color: var(--success); font-weight: bold; display: flex; align-items: center; }
         .dot { width: 8px; height: 8px; background: var(--success); border-radius: 50%; margin-right: 5px; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(76, 217, 100, 0.7); } 70% { box-shadow: 0 0 0 8px rgba(76, 217, 100, 0); } 100% { box-shadow: 0 0 0 0 rgba(76, 217, 100, 0); } }
@@ -48,7 +47,6 @@
         h2 { text-align: center; margin: 5px 0; font-size: 22px; letter-spacing: 1px; }
         .rate-badge { text-align: center; background: rgba(255,255,255,0.05); padding: 8px; border-radius: 12px; font-size: 11px; margin-bottom: 15px; }
 
-        /* Inputs */
         .input-group { margin-bottom: 12px; text-align: left; }
         label { display: block; font-size: 10px; color: var(--hint); text-transform: uppercase; margin-bottom: 5px; font-weight: bold; }
         input, select, textarea { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #2f3e4e; background: #1c2733; color: white; outline: none; box-sizing: border-box; font-size: 14px; }
@@ -63,7 +61,6 @@
         .row-btns { display: flex; gap: 10px; margin-bottom: 15px; }
         .secondary-btn { flex: 1; padding: 10px; background: transparent; color: var(--hint); border: 1px solid #2f3e4e; border-radius: 12px; font-size: 12px; cursor: pointer; }
 
-        /* Modal Review */
         .modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background: var(--overlay); justify-content: center; align-items: center; }
         .modal-content { background: var(--card); padding: 25px; border-radius: 24px; width: 85%; max-width: 320px; border: 1px solid var(--accent); }
         .modal-content h3 { margin-top: 0; font-size: 18px; text-align: center; }
@@ -73,7 +70,6 @@
         .counter-num { color: var(--success); font-weight: bold; font-family: monospace; font-size: 14px; }
 
         .footer { font-size: 11px; color: var(--hint); text-align: center; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px; }
-        .author-line { display: flex; justify-content: center; align-items: center; gap: 5px; margin-top: 5px; }
     </style>
 </head>
 <body>
@@ -96,7 +92,7 @@
     </div>
 
     <div class="input-group">
-        <label id="l_amt">Кількість</label>
+        <label id="l_amt">Кількість TON</label>
         <input type="number" id="amt" placeholder="0.00" oninput="calculate()">
     </div>
 
@@ -142,7 +138,7 @@
     </div>
 
     <div class="footer">
-        <div class="author-line">© 2026 <b>Leslav</b> & <b>Gemini AI</b></div>
+        © 2026 <b>Leslav</b> & <b>Gemini AI</b>
     </div>
 </div>
 
@@ -163,58 +159,70 @@
 </div>
 
 <script>
-    function updateCounter() {
-        let count = localStorage.getItem('visit_count') || 198;
-        count = parseInt(count) + 1;
-        localStorage.setItem('visit_count', count);
-        document.getElementById('visit-count').innerText = count.toLocaleString();
-    }
-    updateCounter();
-
+    // Калькулятор
     function calculate() {
-        const t = document.getElementById('type').value;
-        const a = parseFloat(document.getElementById('amt').value) || 0;
-        const r = document.getElementById('res');
-        document.getElementById('l_amt').innerText = "Кількість " + t;
-        let target = t==='TON' ? a*100000 : (t==='GRAM' ? a/5000 : a*20000);
-        r.innerText = Math.floor(target).toLocaleString('uk-UA') + " UA";
+        const type = document.getElementById('type').value;
+        const amount = parseFloat(document.getElementById('amt').value) || 0;
+        const label = document.getElementById('l_amt');
+        const result = document.getElementById('res');
+        
+        label.innerText = "Кількість " + (type === 'USD' ? 'USD' : type);
+        
+        let total = 0;
+        if (type === 'TON') {
+            total = amount * 100000;
+        } else if (type === 'GRAM') {
+            total = amount / 5000;
+        } else if (type === 'USD') {
+            total = amount * 20000;
+        }
+        
+        result.innerText = Math.floor(total).toLocaleString('uk-UA') + " UA";
     }
 
+    // Вставка з буфера
     async function paste(id) {
         try {
             const text = await navigator.clipboard.readText();
             document.getElementById(id).value = text;
-        } catch (e) { alert("Вставте вручну"); }
+        } catch (e) { alert("Будь ласка, вставте вручну"); }
     }
 
+    // Поділитися
     function share() {
         navigator.clipboard.writeText(window.location.href);
         alert("Посилання скопійовано!");
     }
 
+    // Оформлення заявки
     function swap() {
         const a = document.getElementById('amt').value;
         const w = document.getElementById('wal').value;
         const c = document.getElementById('chk').value;
+        const t = document.getElementById('type').value;
         const s = document.getElementById('service_select').value;
-        if(!a || !w || !c) return alert("Заповніть поля!");
-        const m = `🚀 ЗАЯВКА: ${a} ${document.getElementById('type').value}\n📥 Отримаю: ${document.getElementById('res').innerText}\n🔹 Сервіс: ${s}\n💎 Гаманець: ${w}\n🔗 Чек: ${c}`;
+        if(!a || !w || !c) return alert("Заповніть усі поля!");
+        
+        const m = `🚀 ЗАЯВКА: ${a} ${t}\n📥 Отримаю: ${document.getElementById('res').innerText}\n🔹 Сервіс: ${s}\n💎 Гаманець: ${w}\n🔗 Чек: ${c}`;
         window.open(`https://t.me/Leslav?text=${encodeURIComponent(m)}`);
     }
 
-    // Логіка відгуків
+    // Відгуки
     function openModal() { document.getElementById('reviewModal').style.display = 'flex'; }
     function closeModal() { document.getElementById('reviewModal').style.display = 'none'; }
-    
     function sendReview() {
         const name = document.getElementById('rev_name').value;
         const msg = document.getElementById('rev_msg').value;
-        if(!name || !msg) return alert("Будь ласка, заповніть усі поля відгуку!");
-        
-        const reviewText = `⭐️ НОВИЙ ВІДГУК\n\n👤 Від кого: ${name}\n💬 Повідомлення: ${msg}\n\n#відгук`;
-        window.open(`https://t.me/Leslav?text=${encodeURIComponent(reviewText)}`);
+        if(!name || !msg) return alert("Заповніть поля!");
+        window.open(`https://t.me/Leslav?text=${encodeURIComponent("⭐️ ВІДГУК\nВід: "+name+"\n"+msg)}`);
         closeModal();
     }
+
+    // Лічильник
+    let count = localStorage.getItem('visit_count') || 208;
+    count = parseInt(count) + 1;
+    localStorage.setItem('visit_count', count);
+    document.getElementById('visit-count').innerText = count;
 </script>
 </body>
 </html>

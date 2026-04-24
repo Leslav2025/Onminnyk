@@ -10,7 +10,6 @@
             --tg-theme-button-color: #0088cc;
             --tg-theme-text-color: #ffffff;
             --tg-theme-hint-color: #b1c3d5;
-            --ton-blue: #0088cc;
         }
 
         body {
@@ -36,29 +35,34 @@
             border: 1px solid rgba(255,255,255,0.05);
         }
 
-        /* Стилізація логотипа TON */
         .ton-logo {
-            width: 60px;
-            height: 60px;
+            width: 65px;
+            height: 65px;
             margin: 0 auto 15px;
-            background: var(--ton-blue);
+            background: linear-gradient(135deg, #0088cc, #005580);
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
-            box-shadow: 0 0 15px rgba(0, 136, 204, 0.4);
+            box-shadow: 0 0 20px rgba(0, 136, 204, 0.5);
         }
 
-        .ton-logo svg {
-            width: 35px;
-            height: 35px;
-            fill: white;
-        }
+        .ton-logo svg { width: 35px; height: 35px; fill: white; }
 
         h2 { margin: 5px 0; color: white; font-size: 24px; text-transform: uppercase; letter-spacing: 1.5px; }
-        .rate-info { font-size: 11px; color: #4cd964; margin-bottom: 20px; font-weight: bold; background: rgba(76, 217, 100, 0.1); padding: 5px; border-radius: 8px; }
+        
+        .rate-badge {
+            display: inline-block;
+            background: rgba(76, 217, 100, 0.15);
+            color: #4cd964;
+            padding: 6px 12px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
 
-        .input-group { text-align: left; margin-bottom: 12px; position: relative; }
+        .input-group { text-align: left; margin-bottom: 12px; }
         label { display: block; font-size: 10px; margin-bottom: 5px; color: var(--tg-theme-hint-color); text-transform: uppercase; font-weight: bold; }
 
         input, select {
@@ -68,25 +72,25 @@
             border: 1px solid #2f3e4e;
             background: #1c2733;
             color: white;
-            font-size: 14px;
+            font-size: 15px;
             box-sizing: border-box;
             outline: none;
         }
 
         .calc-res {
             background: rgba(0, 136, 204, 0.1);
-            padding: 15px;
-            border-radius: 14px;
+            padding: 18px;
+            border-radius: 16px;
             margin: 15px 0;
-            border: 1px solid var(--ton-blue);
+            border: 1px solid var(--tg-theme-button-color);
         }
 
-        .calc-res span { color: var(--ton-blue); font-size: 24px; font-weight: 800; }
+        .calc-res span { color: var(--tg-theme-button-color); font-size: 26px; font-weight: 800; letter-spacing: 1px; }
 
         button {
             width: 100%;
             padding: 18px;
-            background-color: var(--ton-blue);
+            background-color: var(--tg-theme-button-color);
             color: white;
             border: none;
             border-radius: 12px;
@@ -95,50 +99,43 @@
             cursor: pointer;
             margin-top: 10px;
             text-transform: uppercase;
-            box-shadow: 0 4px 15px rgba(0, 136, 204, 0.3);
         }
 
-        .footer { margin-top: 15px; font-size: 10px; color: var(--tg-theme-hint-color); line-height: 1.4; }
-        
-        .blockchain-tag {
-            display: inline-flex;
-            align-items: center;
-            background: #1c2733;
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 9px;
+        .blockchain-note {
+            font-size: 10px;
             color: #4cd964;
-            margin-top: 5px;
-            border: 1px solid #2f3e4e;
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
         }
+
+        .footer { margin-top: 15px; font-size: 10px; color: var(--tg-theme-hint-color); }
     </style>
 </head>
 <body>
 
 <div class="exchange-card">
     <div class="ton-logo">
-        <svg viewBox="0 0 512 512">
-            <path d="M256 0C114.6 0 0 114.6 0 256s114.6 256 256 256s256-114.6 256-256S397.4 0 256 0zM380.1 169.5L271.7 394c-4.4 9.1-13.4 14.8-23.5 14.8s-19.1-5.7-23.5-14.8L116.3 169.5c-4.1-8.5-3.3-18.6 2.1-26.3c5.4-7.7 14.4-12.3 23.9-12.3h220.1c9.5 0 18.5 4.6 23.9 12.3c5.7 7.7 6.5 17.8 2.4 26.3z"></path>
-        </svg>
+        <svg viewBox="0 0 512 512"><path d="M256 0C114.6 0 0 114.6 0 256s114.6 256 256 256s256-114.6 256-256S397.4 0 256 0zM380.1 169.5L271.7 394c-4.4 9.1-13.4 14.8-23.5 14.8s-19.1-5.7-23.5-14.8L116.3 169.5c-4.1-8.5-3.3-18.6 2.1-26.3c5.4-7.7 14.4-12.3 23.9-12.3h220.1c9.5 0 18.5 4.6 23.9 12.3c5.7 7.7 6.5 17.8 2.4 26.3z"></path></svg>
     </div>
     
     <h2>LESLAV SWAP</h2>
-    <div class="rate-info">
-        1 TON = 100 000 UA | 5000 GRAM = 1 UA
-    </div>
+    <div class="rate-badge">1 TON = 100 000 UA | 5000 GRAM = 1 UA</div>
 
     <div class="input-group">
-        <label>Віддаєте (Валюта чека)</label>
+        <label>Ви віддаєте</label>
         <select id="currency_type" onchange="calculate()">
-            <option value="TON">TON</option>
-            <option value="GRAM">PR GRAM</option>
+            <option value="TON">TON (Мережа TON)</option>
+            <option value="GRAM">PR GRAM (Чек)</option>
             <option value="USD">USD ($)</option>
         </select>
     </div>
 
     <div class="input-group">
         <label id="amount_label">Кількість TON</label>
-        <input type="number" id="amount_input" placeholder="0" oninput="calculate()">
+        <input type="number" id="amount_input" step="0.01" placeholder="0.00" oninput="calculate()">
     </div>
 
     <div class="calc-res">
@@ -147,52 +144,44 @@
     </div>
 
     <div class="input-group">
-        <label>Сервіс чеку</label>
-        <select id="service_select">
-            <option value="Crypto Bot">Чек Crypto Bot</option>
-            <option value="xRocket">Чек xRocket</option>
-            <option value="PR GRAM">Чек PR GRAM</option>
-            <option value="iCryptoCheck">Чек iCryptoCheck</option>
-        </select>
-    </div>
-
-    <div class="input-group">
-        <label>Посилання на ваш чек</label>
-        <input type="text" id="check_link" placeholder="https://t.me/...">
-    </div>
-
-    <div class="input-group">
-        <label>Ваш гаманець для отримання UA</label>
+        <label>Ваш гаманець для виплати UA</label>
         <input type="text" id="wallet_address" placeholder="UQ... або EQ...">
-        <div class="blockchain-tag">● Тільки мережа TON Blockchain</div>
+        <div class="blockchain-note">● Тільки гаманці TON Blockchain</div>
+    </div>
+
+    <div class="input-group">
+        <label>Посилання на чек</label>
+        <input type="text" id="check_link" placeholder="https://t.me/...">
     </div>
 
     <button onclick="startExchange()">Обміняти зараз</button>
 
     <div class="footer">
-        Виплати здійснюються вручну на вказану TON-адресу.<br>Час обробки: до 5 хвилин.
+        Перевірка чека та виплата займає до 5 хвилин.
     </div>
 </div>
 
 <script>
     function calculate() {
         const type = document.getElementById('currency_type').value;
-        const amount = parseFloat(document.getElementById('amount_input').value);
-        const label = document.getElementById('amount_label');
+        const inputVal = document.getElementById('amount_input').value;
+        const amount = parseFloat(inputVal);
         const resDisplay = document.getElementById('result_display');
         
-        label.innerText = "Кількість " + type;
+        document.getElementById('amount_label').innerText = "Кількість " + type;
 
-        let result = 0;
-        if (amount > 0) {
+        if (!isNaN(amount) && amount > 0) {
+            let result = 0;
             if (type === 'TON') {
+                // Курс: 0.10 TON = 10 000 UA, 1 TON = 100 000 UA
                 result = amount * 100000;
             } else if (type === 'GRAM') {
                 result = amount / 5000;
             } else if (type === 'USD') {
                 result = amount * 20000;
             }
-            resDisplay.innerText = Math.round(result).toLocaleString('uk-UA').replace(/,/g, ' ');
+            // Форматування з пробілами
+            resDisplay.innerText = Math.floor(result).toLocaleString('uk-UA').replace(/,/g, ' ');
         } else {
             resDisplay.innerText = "0";
         }
@@ -202,19 +191,16 @@
         const type = document.getElementById('currency_type').value;
         const amount = document.getElementById('amount_input').value;
         const resultUA = document.getElementById('result_display').innerText;
-        const service = document.getElementById('service_select').value;
-        const check = document.getElementById('check_link').value.trim();
-        const wallet = document.getElementById('wallet_address').value.trim();
-        
-        if (!check || !wallet || !amount) {
-            alert("Заповніть всі поля для створення заявки!");
+        const wallet = document.getElementById('wallet_address').value;
+        const check = document.getElementById('check_link').value;
+
+        if (!amount || !wallet || !check) {
+            alert("Будь ласка, заповніть усі поля!");
             return;
         }
 
-        const message = `🚀 ЗАЯВКА: LESLAV SWAP\n\n💰 Віддаю: ${amount} ${type}\n📥 Отримую: ${resultUA} UA\n🔹 Сервіс: ${service}\n🔗 Чек: ${check}\n💎 Гаманець (TON): ${wallet}`;
-        const url = `https://t.me/Leslav?text=${encodeURIComponent(message)}`;
-
-        window.open(url, '_blank');
+        const msg = `🚀 ЗАЯВКА LESLAV SWAP\n\n💰 Віддаю: ${amount} ${type}\n📥 Отримую: ${resultUA} UA\n💎 Гаманець: ${wallet}\n🔗 Чек: ${check}`;
+        window.open(`https://t.me/Leslav?text=${encodeURIComponent(msg)}`);
     }
 </script>
 

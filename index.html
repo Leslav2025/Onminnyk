@@ -93,7 +93,7 @@
 
     <div class="input-group">
         <label id="l_amt">Кількість TON</label>
-        <input type="number" id="amt" placeholder="0.00" oninput="calculate()">
+        <input type="number" id="amt" step="any" placeholder="0.00" oninput="calculate()">
     </div>
 
     <div class="calc-res">
@@ -161,10 +161,64 @@
 <script>
     function calculate() {
         const type = document.getElementById('type').value;
-        const amount = parseFloat(document.getElementById('amt').value) || 0;
+        const amount = parseFloat(document.getElementById('amt').value.replace(',', '.')) || 0;
         const label = document.getElementById('l_amt');
         const result = document.getElementById('res');
+        
         label.innerText = "Кількість " + (type === 'USD' ? 'USD' : type);
+        
         let total = 0;
-        if (type === 'TON') { total = amount * 100000; } 
-        else if (type === 'GRAM') {
+        if (type === 'TON') {
+            total = amount * 100000;
+            result.innerText = Math.round(total).toLocaleString('uk-UA') + " UA";
+        } else if (type === 'GRAM') {
+            total = amount / 5000;
+            // Для GRAM показуємо 2 знаки після коми, якщо сума мала
+            result.innerText = total < 1 ? total.toFixed(2).toLocaleString('uk-UA') + " UA" : Math.round(total).toLocaleString('uk-UA') + " UA";
+        } else if (type === 'USD') {
+            total = amount * 20000;
+            result.innerText = Math.round(total).toLocaleString('uk-UA') + " UA";
+        }
+    }
+
+    async function paste(id) {
+        try {
+            const text = await navigator.clipboard.readText();
+            document.getElementById(id).value = text;
+        } catch (e) { alert("Будь ласка, вставте вручну"); }
+    }
+
+    function share() {
+        const botUrl = "http://t.me/Leslaswap_bot";
+        const shareUrl = "https://t.me/share/url?url=" + encodeURIComponent(botUrl) + "&text=" + encodeURIComponent("🚀 Обмін TON/GRAM на UA в LESLAV SWAP!");
+        window.open(shareUrl, '_blank');
+    }
+
+    function swap() {
+        const a = document.getElementById('amt').value;
+        const w = document.getElementById('wal').value;
+        const c = document.getElementById('chk').value;
+        const t = document.getElementById('type').value;
+        const s = document.getElementById('service_select').value;
+        if(!a || !w || !c) return alert("Заповніть усі поля!");
+        const m = `🚀 ЗАЯВКА: ${a} ${t}\n📥 Отримаю: ${document.getElementById('res').innerText}\n🔹 Сервіс: ${s}\n💎 Гаманець: ${w}\n🔗 Чек: ${c}`;
+        window.open(`https://t.me/Leslav?text=${encodeURIComponent(m)}`);
+    }
+
+    function openModal() { document.getElementById('reviewModal').style.display = 'flex'; }
+    function closeModal() { document.getElementById('reviewModal').style.display = 'none'; }
+    function sendReview() {
+        const name = document.getElementById('rev_name').value;
+        const msg = document.getElementById('rev_msg').value;
+        if(!name || !msg) return alert("Заповніть поля!");
+        window.open(`https://t.me/Leslav?text=${encodeURIComponent("⭐️ ВІДГУК\nВід: "+name+"\n"+msg)}`);
+        closeModal();
+    }
+
+    let count = localStorage.getItem('visit_count') || 216;
+    count = parseInt(count) + 1;
+    localStorage.setItem('visit_count', count);
+    document.getElementById('visit-count').innerText = count;
+</script>
+</body>
+</html>

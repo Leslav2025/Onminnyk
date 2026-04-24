@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LESLAV EXCHANGE</title>
+    <title>LESLAV SWAP</title>
     <style>
         :root {
             --tg-theme-bg-color: #18222d;
@@ -20,8 +20,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            overflow: hidden;
+            min-height: 100vh;
         }
 
         .exchange-card {
@@ -34,34 +33,25 @@
             text-align: center;
         }
 
-        h2 { 
-            margin-top: 0;
-            margin-bottom: 5px; 
-            color: var(--tg-theme-button-color);
-            font-size: 24px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
+        h2 { margin: 0 0 5px 0; color: var(--tg-theme-button-color); font-size: 26px; text-transform: uppercase; letter-spacing: 2px; }
+        p { color: var(--tg-theme-hint-color); font-size: 13px; margin-bottom: 25px; }
 
-        p { color: var(--tg-theme-hint-color); font-size: 14px; margin-bottom: 25px; }
-
-        .input-group { text-align: left; margin-bottom: 18px; }
+        .input-group { text-align: left; margin-bottom: 15px; }
         label { display: block; font-size: 11px; margin-bottom: 8px; color: var(--tg-theme-hint-color); text-transform: uppercase; font-weight: bold; }
 
-        input {
+        input, select {
             width: 100%;
-            padding: 14px;
+            padding: 12px;
             border-radius: 10px;
             border: 1px solid #2f3e4e;
             background: #1c2733;
             color: white;
-            font-size: 15px;
+            font-size: 14px;
             box-sizing: border-box;
             outline: none;
-            transition: border-color 0.3s;
         }
 
-        input:focus { border-color: var(--tg-theme-button-color); }
+        option { background: #212d3b; }
 
         button {
             width: 100%;
@@ -74,11 +64,11 @@
             font-weight: bold;
             cursor: pointer;
             margin-top: 10px;
-            box-shadow: 0 4px 10px rgba(46, 166, 255, 0.3);
             text-transform: uppercase;
+            box-shadow: 0 4px 15px rgba(46, 166, 255, 0.2);
         }
 
-        button:active { transform: scale(0.98); opacity: 0.9; }
+        button:active { transform: scale(0.98); }
 
         .footer { margin-top: 20px; font-size: 11px; color: var(--tg-theme-hint-color); line-height: 1.4; }
     </style>
@@ -86,40 +76,63 @@
 <body>
 
 <div class="exchange-card">
-    <h2>LESLAV</h2>
-    <p>Обмін крипто-чеків на токени UA</p>
+    <h2>LESLAV SWAP</h2>
+    <p>Твій надійний міст між іграми та UA</p>
 
     <div class="input-group">
-        <label>Посилання на чек (Crypto/xRocket)</label>
-        <input type="text" id="check_link" placeholder="https://t.me/CryptoBot?start=...">
+        <label>Виберіть сервіс (Тип чеку)</label>
+        <select id="service_select">
+            <option value="PR GRAM">Чек PR GRAM</option>
+            <option value="iCryptoCheck">Чек iCryptoCheck</option>
+            <option value="Crypto Bot">Чек Crypto Bot</option>
+            <option value="xRocket">Чек xRocket</option>
+            <option value="Інший сервіс">Інший сервіс</option>
+        </select>
     </div>
 
     <div class="input-group">
-        <label>Ваша адреса гаманця TON</label>
-        <input type="text" id="wallet_address" placeholder="UQ...">
+        <label>Валюта, яку міняєте</label>
+        <select id="currency_select">
+            <option value="PR GRAM">PR GRAM</option>
+            <option value="UA (Токен)">UA (Токен)</option>
+            <option value="TON">TON</option>
+            <option value="USDT">USDT</option>
+            <option value="NOT">NOT</option>
+            <option value="Інша">Інша валюта</option>
+        </select>
     </div>
 
-    <button onclick="startExchange()">Leslav Exchange</button>
+    <div class="input-group">
+        <label>Посилання на чек</label>
+        <input type="text" id="check_link" placeholder="Вставте посилання на чек">
+    </div>
+
+    <div class="input-group">
+        <label>Ваш гаманець TON для отримання</label>
+        <input type="text" id="wallet_address" placeholder="UQ... або EQ...">
+    </div>
+
+    <button onclick="startExchange()">Обміняти зараз</button>
 
     <div class="footer">
-        Після натискання ви перейдете в чат Leslav<br>для завершення обміну
+        Швидка перевірка та виплата.<br>Працюємо 24/7 у ручному режимі.
     </div>
 </div>
 
 <script>
     function startExchange() {
+        const service = document.getElementById('service_select').value;
+        const currency = document.getElementById('currency_select').value;
         const check = document.getElementById('check_link').value.trim();
         const wallet = document.getElementById('wallet_address').value.trim();
-        
-        // Твій юзернейм в Telegram
         const myTelegram = "Leslav"; 
 
         if (!check || !wallet) {
-            alert("Будь ласка, заповніть усі поля!");
+            alert("Будь ласка, заповніть всі поля!");
             return;
         }
 
-        const message = `👋 Вітаю, Leslav!\nЯ через Leslav Exchange.\n\n🔗 Мій чек: ${check}\n💎 Мій гаманець TON: ${wallet}`;
+        const message = `🚀 НОВА ЗАЯВКА: LESLAV SWAP\n\n🔹 Сервіс: ${service}\n💰 Валюта: ${currency}\n🔗 Чек: ${check}\n💎 Гаманець: ${wallet}`;
         const url = `https://t.me/${myTelegram}?text=${encodeURIComponent(message)}`;
 
         window.open(url, '_blank');

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LESLAV SWAP | Універсальний Калькулятор</title>
+    <title>LESLAV SWAP | Фіксований Курс</title>
     <style>
         :root {
             --tg-theme-bg-color: #18222d;
@@ -35,7 +35,7 @@
         }
 
         h2 { margin: 0 0 5px 0; color: var(--tg-theme-button-color); font-size: 24px; text-transform: uppercase; letter-spacing: 1.5px; }
-        .rate-info { font-size: 11px; color: #4cd964; margin-bottom: 15px; }
+        .rate-info { font-size: 11px; color: #4cd964; margin-bottom: 15px; line-height: 1.4; }
 
         .input-group { text-align: left; margin-bottom: 12px; }
         label { display: block; font-size: 10px; margin-bottom: 5px; color: var(--tg-theme-hint-color); text-transform: uppercase; font-weight: bold; }
@@ -60,7 +60,7 @@
             border: 1px solid var(--tg-theme-button-color);
         }
 
-        .calc-res span { color: var(--tg-theme-button-color); font-size: 20px; font-weight: bold; }
+        .calc-res span { color: var(--tg-theme-button-color); font-size: 22px; font-weight: bold; }
 
         button {
             width: 100%;
@@ -83,20 +83,23 @@
 
 <div class="exchange-card">
     <h2>LESLAV SWAP</h2>
-    <div class="rate-info">Курс: 1 TON = 100,000 UA | 1$ ≈ 20,000 UA</div>
+    <div class="rate-info">
+        Курс: 1 UA = 0.000010 TON<br>
+        Курс: 1 UA = 5000 PR GRAM
+    </div>
 
     <div class="input-group">
-        <label>Валюта чека</label>
+        <label>Валюта, яку віддаєте</label>
         <select id="currency_type" onchange="calculate()">
             <option value="TON">TON</option>
-            <option value="USD">Долари ($)</option>
             <option value="GRAM">PR GRAM</option>
+            <option value="USD">Долари ($)</option>
         </select>
     </div>
 
     <div class="input-group">
         <label id="amount_label">Кількість TON</label>
-        <input type="number" id="amount_input" placeholder="0.00" oninput="calculate()">
+        <input type="number" id="amount_input" placeholder="0" oninput="calculate()">
     </div>
 
     <div class="calc-res">
@@ -105,12 +108,12 @@
     </div>
 
     <div class="input-group">
-        <label>Тип сервісу (Чек)</label>
+        <label>Сервіс чеку</label>
         <select id="service_select">
-            <option value="PR GRAM">Чек PR GRAM</option>
-            <option value="iCryptoCheck">Чек iCryptoCheck</option>
             <option value="Crypto Bot">Чек Crypto Bot</option>
             <option value="xRocket">Чек xRocket</option>
+            <option value="PR GRAM">Чек PR GRAM</option>
+            <option value="iCryptoCheck">Чек iCryptoCheck</option>
         </select>
     </div>
 
@@ -127,7 +130,7 @@
     <button onclick="startExchange()">Обміняти</button>
 
     <div class="footer">
-        Обмін проводиться вручну. PR GRAM розраховується за актуальним курсом до TON.
+        Ручний обмін за курсом LESLAV SWAP.
     </div>
 </div>
 
@@ -143,13 +146,14 @@
         let result = 0;
         if (amount > 0) {
             if (type === 'TON') {
-                result = amount * 100000;
-            } else if (type === 'USD') {
-                result = amount * 20000; // 1$ = 20k UA
+                // Твій курс: 1 UA = 0.000010 TON => 1 TON = 100,000 UA
+                result = amount / 0.000010;
             } else if (type === 'GRAM') {
-                // Наприклад: 5000 GRAM = 0.5 TON = 50,000 UA
-                // Тобто 1 GRAM = 10 UA
-                result = amount * 10; 
+                // Твій курс: 5000 GRAM = 1 UA
+                result = amount / 5000;
+            } else if (type === 'USD') {
+                // Приблизний курс долара до UA через TON ($5 = 100,000 UA)
+                result = amount * 20000;
             }
             resDisplay.innerText = Math.floor(result).toLocaleString();
         } else {
@@ -168,7 +172,7 @@
         const myTelegram = "Leslav"; 
 
         if (!check || !wallet || !amount) {
-            alert("Заповніть всі поля!");
+            alert("Будь ласка, заповніть всі поля!");
             return;
         }
 

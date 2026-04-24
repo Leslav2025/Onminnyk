@@ -105,6 +105,7 @@
         <select id="service_select">
             <option value="Crypto Bot">Чек Crypto Bot</option>
             <option value="xRocket">Чек xRocket</option>
+            <option value="EXTON">Чек EXTON</option>
             <option value="PR GRAM">Чек PR GRAM</option>
             <option value="iCryptoCheck">Чек iCryptoCheck</option>
         </select>
@@ -161,7 +162,8 @@
 <script>
     function calculate() {
         const type = document.getElementById('type').value;
-        const amount = parseFloat(document.getElementById('amt').value.replace(',', '.')) || 0;
+        const val = document.getElementById('amt').value.replace(',', '.');
+        const amount = parseFloat(val) || 0;
         const label = document.getElementById('l_amt');
         const result = document.getElementById('res');
         
@@ -170,14 +172,17 @@
         let total = 0;
         if (type === 'TON') {
             total = amount * 100000;
-            result.innerText = Math.round(total).toLocaleString('uk-UA') + " UA";
         } else if (type === 'GRAM') {
             total = amount / 5000;
-            // Для GRAM показуємо 2 знаки після коми, якщо сума мала
-            result.innerText = total < 1 ? total.toFixed(2).toLocaleString('uk-UA') + " UA" : Math.round(total).toLocaleString('uk-UA') + " UA";
         } else if (type === 'USD') {
             total = amount * 20000;
-            result.innerText = Math.round(total).toLocaleString('uk-UA') + " UA";
+        }
+
+        // Відображення результату: для малих сум GRAM показуємо копійки, інакше заокруглюємо
+        if (type === 'GRAM' && total > 0 && total < 1) {
+            result.innerText = total.toFixed(2).replace('.', ',') + " UA";
+        } else {
+            result.innerText = Math.round(total).toLocaleString('uk-UA').replace(/,/g, ' ') + " UA";
         }
     }
 

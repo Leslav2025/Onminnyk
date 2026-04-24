@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LESLAV SWAP | Калькулятор</title>
+    <title>LESLAV SWAP | Універсальний Калькулятор</title>
     <style>
         :root {
             --tg-theme-bg-color: #18222d;
@@ -26,7 +26,7 @@
 
         .exchange-card {
             background: #212d3b;
-            padding: 30px;
+            padding: 25px;
             border-radius: 20px;
             box-shadow: 0 8px 25px rgba(0,0,0,0.4);
             width: 90%;
@@ -34,11 +34,11 @@
             text-align: center;
         }
 
-        h2 { margin: 0 0 5px 0; color: var(--tg-theme-button-color); font-size: 26px; text-transform: uppercase; letter-spacing: 2px; }
-        .rate-info { font-size: 12px; color: #4cd964; margin-bottom: 20px; font-weight: bold; }
+        h2 { margin: 0 0 5px 0; color: var(--tg-theme-button-color); font-size: 24px; text-transform: uppercase; letter-spacing: 1.5px; }
+        .rate-info { font-size: 11px; color: #4cd964; margin-bottom: 15px; }
 
-        .input-group { text-align: left; margin-bottom: 15px; }
-        label { display: block; font-size: 11px; margin-bottom: 6px; color: var(--tg-theme-hint-color); text-transform: uppercase; font-weight: bold; }
+        .input-group { text-align: left; margin-bottom: 12px; }
+        label { display: block; font-size: 10px; margin-bottom: 5px; color: var(--tg-theme-hint-color); text-transform: uppercase; font-weight: bold; }
 
         input, select {
             width: 100%;
@@ -53,14 +53,14 @@
         }
 
         .calc-res {
-            background: #1c2733;
+            background: rgba(46, 166, 255, 0.1);
             padding: 15px;
-            border-radius: 10px;
+            border-radius: 12px;
             margin: 15px 0;
-            border: 1px dashed var(--tg-theme-button-color);
+            border: 1px solid var(--tg-theme-button-color);
         }
 
-        .calc-res span { color: var(--tg-theme-button-color); font-size: 18px; font-weight: bold; }
+        .calc-res span { color: var(--tg-theme-button-color); font-size: 20px; font-weight: bold; }
 
         button {
             width: 100%;
@@ -76,27 +76,36 @@
             text-transform: uppercase;
         }
 
-        .footer { margin-top: 20px; font-size: 11px; color: var(--tg-theme-hint-color); line-height: 1.4; }
+        .footer { margin-top: 15px; font-size: 10px; color: var(--tg-theme-hint-color); line-height: 1.4; }
     </style>
 </head>
 <body>
 
 <div class="exchange-card">
     <h2>LESLAV SWAP</h2>
-    <div class="rate-info">Курс: 1 TON = 100,000 UA</div>
+    <div class="rate-info">Курс: 1 TON = 100,000 UA | 1$ ≈ 20,000 UA</div>
 
     <div class="input-group">
-        <label>Скільки TON ви віддаєте?</label>
+        <label>Валюта чека</label>
+        <select id="currency_type" onchange="calculate()">
+            <option value="TON">TON</option>
+            <option value="USD">Долари ($)</option>
+            <option value="GRAM">PR GRAM</option>
+        </select>
+    </div>
+
+    <div class="input-group">
+        <label id="amount_label">Кількість TON</label>
         <input type="number" id="amount_input" placeholder="0.00" oninput="calculate()">
     </div>
 
     <div class="calc-res">
-        Ви отримаєте приблизно:<br>
+        Ви отримаєте:<br>
         <span id="result_display">0</span> UA
     </div>
 
     <div class="input-group">
-        <label>Тип чеку</label>
+        <label>Тип сервісу (Чек)</label>
         <select id="service_select">
             <option value="PR GRAM">Чек PR GRAM</option>
             <option value="iCryptoCheck">Чек iCryptoCheck</option>
@@ -111,45 +120,59 @@
     </div>
 
     <div class="input-group">
-        <label>Ваш гаманець TON</label>
-        <input type="text" id="wallet_address" placeholder="UQ...">
+        <label>Ваш гаманець TON (UQ...)</label>
+        <input type="text" id="wallet_address" placeholder="Вставте адресу">
     </div>
 
     <button onclick="startExchange()">Обміняти</button>
 
     <div class="footer">
-        Розрахунок базується на курсі 0.00001 TON за 1 UA.
+        Обмін проводиться вручну. PR GRAM розраховується за актуальним курсом до TON.
     </div>
 </div>
 
 <script>
     function calculate() {
+        const type = document.getElementById('currency_type').value;
         const amount = document.getElementById('amount_input').value;
-        const resultDisplay = document.getElementById('result_display');
+        const label = document.getElementById('amount_label');
+        const resDisplay = document.getElementById('result_display');
         
+        label.innerText = "Кількість " + (type === 'USD' ? 'Доларів ($)' : type);
+
+        let result = 0;
         if (amount > 0) {
-            // 1 UA = 0.000010 TON => 1 TON = 100,000 UA
-            const uaAmount = amount * 100000;
-            resultDisplay.innerText = uaAmount.toLocaleString();
+            if (type === 'TON') {
+                result = amount * 100000;
+            } else if (type === 'USD') {
+                result = amount * 20000; // 1$ = 20k UA
+            } else if (type === 'GRAM') {
+                // Наприклад: 5000 GRAM = 0.5 TON = 50,000 UA
+                // Тобто 1 GRAM = 10 UA
+                result = amount * 10; 
+            }
+            resDisplay.innerText = Math.floor(result).toLocaleString();
         } else {
-            resultDisplay.innerText = "0";
+            resDisplay.innerText = "0";
         }
     }
 
     function startExchange() {
+        const type = document.getElementById('currency_type').value;
         const amount = document.getElementById('amount_input').value;
-        const uaReceived = document.getElementById('result_display').innerText;
+        const resultUA = document.getElementById('result_display').innerText;
         const service = document.getElementById('service_select').value;
         const check = document.getElementById('check_link').value.trim();
         const wallet = document.getElementById('wallet_address').value.trim();
+        
         const myTelegram = "Leslav"; 
 
         if (!check || !wallet || !amount) {
-            alert("Будь ласка, заповніть всі поля!");
+            alert("Заповніть всі поля!");
             return;
         }
 
-        const message = `🚀 ЗАЯВКА LESLAV SWAP\n\n💰 Віддаю: ${amount} TON\n📥 Отримую: ${uaReceived} UA\n🔹 Сервіс: ${service}\n🔗 Чек: ${check}\n💎 Гаманець: ${wallet}`;
+        const message = `🚀 ЗАЯВКА LESLAV SWAP\n\n💰 Клієнт віддає: ${amount} ${type}\n📥 Має отримати: ${resultUA} UA\n🔹 Через: ${service}\n🔗 Чек: ${check}\n💎 Гаманець: ${wallet}`;
         const url = `https://t.me/${myTelegram}?text=${encodeURIComponent(message)}`;
 
         window.open(url, '_blank');

